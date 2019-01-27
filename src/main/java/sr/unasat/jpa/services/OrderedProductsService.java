@@ -28,9 +28,9 @@ public class OrderedProductsService {
         try {
             Product orderedProduct = orderedProductDao.addToOrders(productId, quantity);
             orders.add(new OrderedProduct(orderedProduct, quantity));
+            System.out.println("U heeft " + orderedProduct.getName() + " toegevoegd");
         } catch (EntityExistsException e) {
             System.out.println("U heeft dit product al toegevoegd");
-            System.out.println("Dit is uw bestellingslijst:");
             viewAllOrders();
             return;
         } catch (NullPointerException e) {
@@ -42,7 +42,8 @@ public class OrderedProductsService {
 
     public void viewAllOrders() {
         if (!orders.isEmpty()) {
-            orders.forEach(order -> System.out.println("Item: " + order.getProduct().getName() + "\n" +
+            orders.forEach(order -> System.out.println("Dit zijn uw bestellingen: \n" +
+                    "Item: " + order.getProduct().getName() + "\n" +
                     "Aantal: " + order.getQuantity()));
         } else {
             System.out.println("U heeft geen bestellingen");
@@ -52,9 +53,12 @@ public class OrderedProductsService {
     public void removeFromOrders(int orderedProduct) {
         try {
             orderedProductDao.removeFromOrders(orderedProduct);
+            orders.remove(orderedProduct);
         } catch (NoResultException e) {
             System.out.println("Deze item komt niet voor in uw bestellingen");
             JPAConfiguration.getEntityManager().getTransaction().rollback();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Deze selectie is niet mogelijk te verwijderen");
         }
     }
 

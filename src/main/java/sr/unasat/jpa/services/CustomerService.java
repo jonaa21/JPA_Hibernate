@@ -32,7 +32,7 @@ public class CustomerService {
         try {
             customerDao.insertCustomer(customer);
             System.out.println("Toegevoegd: " + customer.getPerson().getFullName() +
-                    "met klantnummer: " + customer.getCustomerNumber());
+                    " met klantnummer: " + customer.getCustomerNumber());
         } catch (EntityExistsException e) {
             System.out.println(customer.getPerson().getFullName() + " is al toegevoegd als klant");
         }
