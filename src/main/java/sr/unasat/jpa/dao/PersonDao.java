@@ -1,6 +1,5 @@
 package sr.unasat.jpa.dao;
 
-import sr.unasat.jpa.config.JPAConfiguration;
 import sr.unasat.jpa.entities.Adres;
 import sr.unasat.jpa.entities.Person;
 

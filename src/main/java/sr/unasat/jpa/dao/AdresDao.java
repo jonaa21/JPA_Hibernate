@@ -55,13 +55,13 @@ public class AdresDao {
         entityManager.getTransaction().commit();
     }
 
-    public void deletePerson(int id) {
-        Adres a = selectAdresById(id);
-        if (a == null) {
+    public void deleteAdres(int id) {
+        Adres adres = selectAdresById(id);
+        if (adres == null) {
             return;
         }
         entityManager.getTransaction().begin();
-        entityManager.remove(a);
+        entityManager.remove(adres);
         entityManager.getTransaction().commit();
     }
 }

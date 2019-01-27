@@ -1,7 +1,6 @@
 package sr.unasat.jpa.entities;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -59,7 +58,8 @@ public class OrderedProduct {
     @Override
     public String toString() {
         return "OrderedProduct{" +
-                "product=" + product.getName() +
+                "id=" + id +
+                ", product=" + product.getName() +
                 ", quantity=" + quantity +
                 '}';
     }

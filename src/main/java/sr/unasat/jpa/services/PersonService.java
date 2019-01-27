@@ -4,6 +4,7 @@ import sr.unasat.jpa.dao.PersonDao;
 import sr.unasat.jpa.entities.Person;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 public class PersonService {
 
@@ -25,11 +26,15 @@ public class PersonService {
         personDao.selectPersonById(id);
     }
 
-    public void selectAllPersonByAdres(Person person) {
-        personDao.selectAllPersonsByAdres(person.getAdres());
+    public List<Person> selectAllPersonByAdres(Person person) {
+        return personDao.selectAllPersonsByAdres(person.getAdres());
     }
 
     public void removePersonById(int id) {
         personDao.deletePerson(id);
+    }
+
+    public List<Person> selectAllPersons() {
+        return personDao.selectAllPersons();
     }
 }

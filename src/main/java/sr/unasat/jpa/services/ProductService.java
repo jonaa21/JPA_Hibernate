@@ -26,12 +26,12 @@ public class ProductService {
         return productDao.selectProductById(id);
     }
 
-    public int removeFromStock(int  productId, int quantity){
-        return productDao.removeFromStock(productId, quantity);
+    public int removeFromStock(Product product, int quantity) {
+        return productDao.removeFromStock(product, quantity);
     }
 
-    public int addToStock(int  productId, int quantity){
-        return productDao.addToStock(productId, quantity);
+    public int addToStock(Product product, int quantity) {
+        return productDao.addToStock(product, quantity);
     }
 
     public int deleteProductById(int productId){ return productDao.deleteProduct(productId);}

@@ -60,13 +60,12 @@ public class ProductDao {
         return id;
     }
 
-    public int removeFromStock(int productId, int quantity){
-        Product prod = selectProductById(productId);
-        int stock = prod.getStockQuantity() - quantity;
-        return transaction(quantity, prod, stock);
+    public int removeFromStock(Product product, int quantity) {
+        int stock = product.getStockQuantity() - quantity;
+        return stockManager(quantity, product, stock);
     }
 
-    private int transaction(int quantity, Product prod, int stock) {
+    private int stockManager(int quantity, Product prod, int stock) {
         prod.setStockQuantity(stock);
         if (!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
@@ -76,10 +75,9 @@ public class ProductDao {
         return quantity;
     }
 
-    public int addToStock(int productId, int quantity){
-        Product prod = selectProductById(productId);
-        int stock = prod.getStockQuantity() + quantity;
-        return transaction(quantity, prod, stock);
+    public int addToStock(Product product, int quantity) {
+        int stock = product.getStockQuantity() + quantity;
+        return stockManager(quantity, product, stock);
     }
 
     public List<Product> selectProductRating(int rating){

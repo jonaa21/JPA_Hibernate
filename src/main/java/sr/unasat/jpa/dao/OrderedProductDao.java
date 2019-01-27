@@ -29,26 +29,50 @@ public class OrderedProductDao {
         return orders;
     }
 
-    public List<OrderedProduct> addToOrders(int productId, int quantity) {
+    public OrderedProduct selectOrderedProduct(int orderedProductId) {
+        entityManager.getTransaction().begin();
+        String jpql = "select o from OrderedProduct o where o.id = :id";
+        TypedQuery<OrderedProduct> query = entityManager.createQuery(jpql, OrderedProduct.class);
+        query.setParameter("id", orderedProductId);
+        OrderedProduct selectedOrderedProduct = query.getSingleResult();
+        entityManager.getTransaction().commit();
+        return selectedOrderedProduct;
+    }
+
+    public Product addToOrders(int productId, int quantity) {
         products = productDao.selectAllProducts();
         Product selectedProduct = productDao.selectProductById(productId);
 
         for (Product prod : products) {
             if (!prod.getName().equals(selectedProduct.getName())) {
-                continue;
+                break;
             }
         }
         OrderedProduct orderedProduct = new OrderedProduct(selectedProduct, quantity);
-        productDao.removeFromStock(selectedProduct.getId(), quantity);
+        productDao.removeFromStock(orderedProduct.getProduct(), quantity);
         entityManager.getTransaction().begin();
         entityManager.persist(orderedProduct);
         entityManager.getTransaction().commit();
         orders.add(orderedProduct);
-        calculatePrice();
-        return orders;
+        return selectedProduct;
     }
 
-    public double calculatePrice() {
+    public OrderedProduct removeFromOrders(int orderedProductId) {
+        OrderedProduct orderedProduct = selectOrderedProduct(orderedProductId);
+//        if (orders.contains(orderedProduct)) {
+        productDao.addToStock(orderedProduct.getProduct(), orderedProduct.getQuantity());
+        orders.remove(orderedProduct);
+        entityManager.getTransaction().begin();
+        entityManager.remove(orderedProduct);
+        entityManager.getTransaction().commit();
+        return orderedProduct;
+//        }
+//        else{
+//            throw null;
+//        }
+    }
+
+    public double calculatePriceFromOrder(int OrderedProductId) {//TODO: calculate in receipt
         double totalPrice = 0.0;
         for (OrderedProduct order : orders) {
             double price = order.getProduct().getPrice() * order.getQuantity();
