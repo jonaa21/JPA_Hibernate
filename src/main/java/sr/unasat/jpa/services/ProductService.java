@@ -1,9 +1,13 @@
 package sr.unasat.jpa.services;
 
+import org.hibernate.procedure.NoSuchParameterException;
+import sr.unasat.jpa.config.JPAConfiguration;
 import sr.unasat.jpa.dao.ProductDao;
 import sr.unasat.jpa.entities.Product;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 public class ProductService {
@@ -15,28 +19,73 @@ public class ProductService {
     }
 
     public void insertProduct(Product product){
-        productDao.insertProduct(product);
+        try {
+            productDao.insertProduct(product);
+            System.out.println("Added:" + product.toString());
+        } catch (EntityExistsException e) {
+            System.out.println(product.getName() + " already exists");
+        }
     }
 
-    public List<Product> selectAllProducts(){
-        return productDao.selectAllProducts();
+    public void viewAllProducts() {
+        List<Product> products = productDao.selectAllProducts();
+        products.forEach(product -> System.out.println(product));
     }
 
-    public Product selectProductById(int id){
-        return productDao.selectProductById(id);
+    public void selectProductById(int id) {
+        try {
+            Product selectedProduct = productDao.selectProductById(id);
+            System.out.println("You have selected:" + selectedProduct.getName());
+        } catch (NoResultException e) {
+            System.out.println("This product does not exist");
+        }
     }
 
-    public int removeFromStock(Product product, int quantity) {
-        return productDao.removeFromStock(product, quantity);
+    public void removeFromStock(int productId, int quantity) {
+        try {
+            productDao.removeFromStock(productId, quantity);
+        } catch (NoResultException e) {
+            System.out.println("This item does not exist in your order list");
+            JPAConfiguration.getEntityManager().getTransaction().rollback();
+        } catch (NullPointerException e) {
+            System.out.println("Stock quantity can't be lower than 0");
+        }
     }
 
-    public int addToStock(Product product, int quantity) {
-        return productDao.addToStock(product, quantity);
+    public void addToStock(int productId, int quantity) {
+        Product product = productDao.addToStock(productId, quantity);
+        System.out.println("Product " + product.getName() +
+                "\n Current stock" + product.getStockQuantity());
     }
 
-    public int deleteProductById(int productId){ return productDao.deleteProduct(productId);}
+    public void deleteProductById(int productId) {
+        try {
+            Product deletedProduct = productDao.deleteProduct(productId);
+            System.out.println("Deleted: " + deletedProduct.getName());
+        } catch (NoResultException e) {
+            System.out.println("This product does not exist");
+        }
+    }
 
-    public List<Product> selectProductRating(int rating){ return productDao.selectProductRating(rating);}
+    public void selectProductRating(int rating) {
+        try {
+            List<Product> products = productDao.selectProductRating(rating);
+            products.forEach(product -> System.out.println(product));
+        } catch (NoResultException e) {
+            System.out.println("No products found with requested rating");
+        }
+    }
 
-    public List<Product> getProductsPriceRange(double minAmount, double maxAmount){ return productDao.getProductsPriceRange(minAmount, maxAmount);}
+    public void getProductsPriceRange(double minAmount, double maxAmount) {
+        try {
+            List<Product> products = productDao.getProductsPriceRange(minAmount, maxAmount);
+            System.out.println("Product(s) between " + minAmount + " and " + maxAmount + " are:\n");
+            products.forEach(product -> System.out.println(product));
+        } catch (NoResultException e) {
+            System.out.println("Unable to filter on price range");
+        } catch (NoSuchParameterException e) {
+            System.out.println("Invalid parameters");
+        }
+    }
 }
+

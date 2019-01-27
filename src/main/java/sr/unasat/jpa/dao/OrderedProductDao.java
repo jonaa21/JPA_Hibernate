@@ -12,7 +12,6 @@ import java.util.List;
 public class OrderedProductDao {
 
     private EntityManager entityManager;
-    private List<Product> products = new ArrayList<>();
     private List<OrderedProduct> orders = new ArrayList<>();
     private ProductDao productDao = new ProductDao(JPAConfiguration.getEntityManager());
 
@@ -40,7 +39,7 @@ public class OrderedProductDao {
     }
 
     public Product addToOrders(int productId, int quantity) {
-        products = productDao.selectAllProducts();
+        List<Product> products = productDao.selectAllProducts();
         Product selectedProduct = productDao.selectProductById(productId);
 
         for (Product prod : products) {
@@ -49,7 +48,7 @@ public class OrderedProductDao {
             }
         }
         OrderedProduct orderedProduct = new OrderedProduct(selectedProduct, quantity);
-        productDao.removeFromStock(orderedProduct.getProduct(), quantity);
+        productDao.removeFromStock(orderedProduct.getProduct().getId(), quantity);
         entityManager.getTransaction().begin();
         entityManager.persist(orderedProduct);
         entityManager.getTransaction().commit();
@@ -59,17 +58,12 @@ public class OrderedProductDao {
 
     public OrderedProduct removeFromOrders(int orderedProductId) {
         OrderedProduct orderedProduct = selectOrderedProduct(orderedProductId);
-//        if (orders.contains(orderedProduct)) {
-        productDao.addToStock(orderedProduct.getProduct(), orderedProduct.getQuantity());
+        productDao.addToStock(orderedProduct.getProduct().getId(), orderedProduct.getQuantity());
         orders.remove(orderedProduct);
         entityManager.getTransaction().begin();
         entityManager.remove(orderedProduct);
         entityManager.getTransaction().commit();
         return orderedProduct;
-//        }
-//        else{
-//            throw null;
-//        }
     }
 
     public double calculatePriceFromOrder(int OrderedProductId) {//TODO: calculate in receipt

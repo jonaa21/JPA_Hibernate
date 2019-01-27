@@ -1,7 +1,9 @@
 package sr.unasat.jpa.dao;
 
+import org.hibernate.procedure.NoSuchParameterException;
 import sr.unasat.jpa.entities.Product;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -40,29 +42,30 @@ public class ProductDao {
         entityManager.getTransaction().begin();
         for (Product prod : products) {
             if (prod.getName().equals(product.getName())) {
-                System.out.println("This prod has already been added");
                 entityManager.getTransaction().rollback();
-                return;
+                throw new EntityExistsException();
             }
         }
         entityManager.persist(product);
         entityManager.getTransaction().commit();
     }
 
-    public int deleteProduct(int id) {
+    public Product deleteProduct(int id) {
         Product product = selectProductById(id);
-        if (product == null) {
-            return 0;
-        }
         entityManager.getTransaction().begin();
         entityManager.remove(product);
         entityManager.getTransaction().commit();
-        return id;
+        return product;
     }
 
-    public int removeFromStock(Product product, int quantity) {
+    public Product removeFromStock(int productId, int quantity) {
+        Product product = selectProductById(productId);
         int stock = product.getStockQuantity() - quantity;
-        return stockManager(quantity, product, stock);
+        if (stock <= 0) {
+            throw new NullPointerException();
+        }
+        stockManager(quantity, product, stock);
+        return product;
     }
 
     private int stockManager(int quantity, Product prod, int stock) {
@@ -75,9 +78,11 @@ public class ProductDao {
         return quantity;
     }
 
-    public int addToStock(Product product, int quantity) {
+    public Product addToStock(int productId, int quantity) {
+        Product product = selectProductById(productId);
         int stock = product.getStockQuantity() + quantity;
-        return stockManager(quantity, product, stock);
+        stockManager(quantity, product, stock);
+        return product;
     }
 
     public List<Product> selectProductRating(int rating){
@@ -91,6 +96,9 @@ public class ProductDao {
     }
 
     public List<Product> getProductsPriceRange(double minAmount, double maxAmount){
+        if (minAmount > maxAmount) {
+            throw new NoSuchParameterException(null);
+        }
         entityManager.getTransaction().begin();
         String jpql = "select p from Product p where p.price >= :minAmount AND p.price <= :maxAmount";
         TypedQuery<Product> query = entityManager.createQuery(jpql, Product.class);
