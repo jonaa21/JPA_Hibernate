@@ -44,7 +44,7 @@ public class Customer {
     }
 
     public void setCustomerNumber() {
-        int customerNumber = new Random().nextInt(100);
+        int customerNumber = new Random().nextInt(1000);
         if (!availableCustomerNumbers.contains(customerNumber)) {
             availableCustomerNumbers.add(customerNumber);
         }
@@ -78,7 +78,7 @@ public class Customer {
     public String toString() {
         return "Customer{" +
                 "customerNumber=" + customerNumber +
-                ", person= " + getPerson() +
+                ", person= " + getPerson().getFullName() +
                 '}';
     }
 }

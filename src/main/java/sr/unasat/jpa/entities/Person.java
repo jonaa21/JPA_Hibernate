@@ -70,7 +70,7 @@ public class Person {
     }
 
     public String getFullName() {
-        return getLastname() + ", " + getFirstname();
+        return getFirstname() + " " + getLastname();
     }
 
     @Override
@@ -78,16 +78,14 @@ public class Person {
         if (this.customer != null) {
             return "Person{" +
                     "id=" + id +
-                    ", firstname='" + firstname + '\'' +
-                    ", lastname='" + lastname + '\'' +
+                    ", name=" + getFullName() +
                     ", customer=" + customer.getCustomerNumber() +
                     ", adres=" + adres.getName() +
                     '}';
         }
         return "Person{" +
                 "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", name=" + getFullName() +
                 ", adres=" + adres.getName() +
                 '}';
     }

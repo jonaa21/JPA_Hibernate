@@ -1,8 +1,8 @@
 package sr.unasat.jpa.dao;
 
-import sr.unasat.jpa.config.JPAConfiguration;
 import sr.unasat.jpa.entities.Customer;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -36,20 +36,29 @@ public class CustomerDao {
         return customer;
     }
 
-    public void insertCustomer(Customer customer) {
+    public Customer insertCustomer(Customer customer) {
         selectAllCustomers();
-        for (Customer c : customers) {
-            if (!customer.getPerson().getFirstname().equals(c.getPerson().getFirstname()) ||
-                    !customer.getPerson().getLastname().equals(c.getPerson().getLastname())) {
+        for (Customer cust : customers) {
+            if (!customer.getPerson().getFirstname().equals(cust.getPerson().getFirstname()) ||
+                    !customer.getPerson().getLastname().equals(cust.getPerson().getLastname())) {
                 continue;
+            } else {
+                throw new EntityExistsException();
             }
-            System.out.println("This customer has already been added");
-            return;
         }
         entityManager.getTransaction().begin();
         entityManager.persist(customer.getPerson().getAdres());
         entityManager.persist(customer.getPerson());
         entityManager.persist(customer);
         entityManager.getTransaction().commit();
+        return customer;
+    }
+
+    public Customer deleteCustomer(int personId) {
+        Customer customer = selectCustomerById(personId);
+        entityManager.getTransaction().begin();
+        entityManager.remove(customer);
+        entityManager.getTransaction().commit();
+        return customer;
     }
 }
