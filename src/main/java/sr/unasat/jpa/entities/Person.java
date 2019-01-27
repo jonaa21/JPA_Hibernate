@@ -69,10 +69,24 @@ public class Person {
         this.customer = customer;
     }
 
+    public String getFullName() {
+        return getLastname() + ", " + getFirstname();
+    }
+
     @Override
     public String toString() {
+        if (this.customer != null) {
+            return "Person{" +
+                    "id=" + id +
+                    ", firstname='" + firstname + '\'' +
+                    ", lastname='" + lastname + '\'' +
+                    ", customer=" + customer.getCustomerNumber() +
+                    ", adres=" + adres.getName() +
+                    '}';
+        }
         return "Person{" +
-                "firstname='" + firstname + '\'' +
+                "id=" + id +
+                ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", adres=" + adres.getName() +
                 '}';

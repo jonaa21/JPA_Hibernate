@@ -1,40 +1,66 @@
 package sr.unasat.jpa.services;
 
+import sr.unasat.jpa.dao.AdresDao;
 import sr.unasat.jpa.dao.PersonDao;
+import sr.unasat.jpa.entities.Adres;
 import sr.unasat.jpa.entities.Person;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import java.util.List;
+import javax.persistence.NoResultException;
 
 public class PersonService {
 
     private PersonDao personDao;
+    private AdresDao adresDao;
 
     public PersonService(EntityManager entityManager) {
         this.personDao = new PersonDao(entityManager);
+        this.adresDao = new AdresDao(entityManager);
     }
 
     public void insertPerson(Person person) {
-        personDao.insertPerson(person);
+        try {
+            personDao.insertPerson(person);
+            System.out.println("Toegevoegd: " + person.toString());
+        } catch (EntityExistsException e) {
+            System.out.println("Deze persoon is al toegevoegd");
+        }
     }
 
-    public void selectPersonList() {
-        personDao.selectAllPersons();
+    public void viewPersonList() {
+        personDao.selectAllPersons().forEach(person -> System.out.println(person));
     }
 
     public void selectPersonById(int id) {
-        personDao.selectPersonById(id);
+        try {
+            Person selectedPerson = personDao.selectPersonById(id);
+            System.out.println("Geselecteerd:" + selectedPerson.getFullName());
+        } catch (Exception e) {
+            System.out.println("Persoon met id: " + id + " komt niet voor");
+        }
     }
 
-    public List<Person> selectAllPersonByAdres(Person person) {
-        return personDao.selectAllPersonsByAdres(person.getAdres());
+    public void viewAllPersonsByAdres(int adresId) {
+        try {
+            Adres adres = adresDao.selectAdresById(adresId);
+            personDao.selectAllPersonsByAdres(adres).forEach(person -> System.out.println(person));
+        } catch (NoResultException e) {
+            System.out.println("Adres met id " + adresId + " komt niet voor");
+        }
+
     }
 
-    public void removePersonById(int id) {
-        personDao.deletePerson(id);
+    public void deletePersonById(int personId) {
+        try {
+            Person deletedPerson = personDao.deletePerson(personId);
+            System.out.println("Deleted: " + deletedPerson.getFullName());
+        } catch (NoResultException e) {
+            System.out.println("Deze persoon bestaat niet");
+        }
     }
 
-    public List<Person> selectAllPersons() {
-        return personDao.selectAllPersons();
+    public void viewAllPersons() {
+        personDao.selectAllPersons().forEach(person -> System.out.println(person));
     }
 }

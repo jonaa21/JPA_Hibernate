@@ -3,8 +3,8 @@ package sr.unasat.jpa.dao;
 import sr.unasat.jpa.entities.Adres;
 import sr.unasat.jpa.entities.Person;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +28,18 @@ public class PersonDao {
     }
 
     public Person selectPersonById(int id) {
-        Person selectedPerson;
         entityManager.getTransaction().begin();
-        try {
-            String jpql = "select p from Person p where p.id = :id";
-            TypedQuery<Person> query = entityManager.createQuery(jpql, Person.class);
-            query.setParameter("id", id);
-            selectedPerson = query.getSingleResult();
-            entityManager.getTransaction().commit();
-            return selectedPerson;
-        } catch (NoResultException e) {
-            System.out.println("Person doesn't exist");
-            entityManager.getTransaction().rollback();
-        }
-        return null;
+        String jpql = "select p from Person p where p.id = :id";
+        TypedQuery<Person> query = entityManager.createQuery(jpql, Person.class);
+        query.setParameter("id", id);
+        Person selectedPerson = query.getSingleResult();
+        entityManager.getTransaction().commit();
+        return selectedPerson;
     }
 
     public List<Person> selectAllPersonsByAdres(Adres adres) {
         entityManager.getTransaction().begin();
-        String jpql = "select p from Person p where p.adres.name = :adres";
+        String jpql = "select p from Person p where p.adres = :adres";
         TypedQuery<Person> query = entityManager.createQuery(jpql, Person.class);
         query.setParameter("adres", adres);
         List<Person> personList = query.getResultList();
@@ -54,29 +47,26 @@ public class PersonDao {
         return personList;
     }
 
-    public void insertPerson(Person p) {
+    public void insertPerson(Person person) {
         selectAllPersons();
         entityManager.getTransaction().begin();
         for (Person pers : personList) {
-            if (p.getFirstname().equals(pers.getFirstname()) && p.getLastname().equals(pers.getLastname())) {
-                System.out.println("This person has already been added");
+            if (person.getFirstname().equals(pers.getFirstname()) && person.getLastname().equals(pers.getLastname())) {
                 entityManager.getTransaction().rollback();
-                return;
+                throw new EntityExistsException();
             }
         }
-        entityManager.persist(p.getAdres());
-        entityManager.persist(p);
+        entityManager.persist(person.getAdres());
+        entityManager.persist(person);
         entityManager.getTransaction().commit();
     }
 
-    public void deletePerson(int id) {
-        Person p = selectPersonById(id);
-        if (p == null) {
-            return;
-        }
+    public Person deletePerson(int personId) {
+        Person person = selectPersonById(personId);
         entityManager.getTransaction().begin();
-        entityManager.remove(p);
+        entityManager.remove(person);
         entityManager.getTransaction().commit();
+        return person;
     }
 }
 
