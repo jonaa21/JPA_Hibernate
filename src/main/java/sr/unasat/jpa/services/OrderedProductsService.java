@@ -32,7 +32,7 @@ public class OrderedProductsService {
         if (!orders.isEmpty()) {
             orders.forEach(order -> System.out.println(order));
         } else {
-            System.out.println("You have no orders");
+            System.out.println("U heeft geen bestellingen");
         }
     }
 
@@ -40,7 +40,7 @@ public class OrderedProductsService {
         try {
             orderedProductDao.removeFromOrders(orderedProduct);
         } catch (NoResultException e) {
-            System.out.println("This item does not exist in your order list");
+            System.out.println("Deze item komt niet voor in uw bestellingen");
             JPAConfiguration.getEntityManager().getTransaction().rollback();
         }
     }

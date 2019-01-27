@@ -58,7 +58,8 @@ public class Adres {
     @Override
     public String toString() {
         return "Adres{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

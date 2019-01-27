@@ -2,8 +2,8 @@ package sr.unasat.jpa.dao;
 
 import sr.unasat.jpa.entities.Adres;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,41 +27,33 @@ public class AdresDao {
     }
 
     public Adres selectAdresById(int id) {
-        Adres adres;
-        try {
             entityManager.getTransaction().begin();
             String jpql = "select a from Adres a where a.id = :id";
             TypedQuery<Adres> query = entityManager.createQuery(jpql, Adres.class);
             query.setParameter("id", id);
-            adres = query.getSingleResult();
+        Adres adres = query.getSingleResult();
             entityManager.getTransaction().commit();
             return adres;
-        } catch (NoResultException e) {
-            System.out.println("Adres doesn't exist");
-            entityManager.getTransaction().rollback();
-        }
-        return null;
     }
 
     public void insertAdres(Adres adres){
         selectAllAdres();
+        entityManager.getTransaction().begin();
         for (Adres a : adresList) {
             if (a.getName().equals(adres.getName())){
-                return;
+                entityManager.getTransaction().rollback();
+                throw new EntityExistsException();
             }
         }
-        entityManager.getTransaction().begin();
         entityManager.persist(adres);
         entityManager.getTransaction().commit();
     }
 
-    public void deleteAdres(int id) {
+    public Adres deleteAdres(int id) {
         Adres adres = selectAdresById(id);
-        if (adres == null) {
-            return;
-        }
         entityManager.getTransaction().begin();
         entityManager.remove(adres);
         entityManager.getTransaction().commit();
+        return adres;
     }
 }

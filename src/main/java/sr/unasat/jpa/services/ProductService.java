@@ -35,20 +35,22 @@ public class ProductService {
     public void selectProductById(int id) {
         try {
             Product selectedProduct = productDao.selectProductById(id);
-            System.out.println("You have selected:" + selectedProduct.getName());
+            System.out.println("Geselecteerd:" + selectedProduct.getName());
         } catch (NoResultException e) {
-            System.out.println("This product does not exist");
+            System.out.println("Item met id: " + id + " komt niet voor");
         }
     }
 
     public void removeFromStock(int productId, int quantity) {
         try {
-            productDao.removeFromStock(productId, quantity);
+            Product deletedProduct = productDao.removeFromStock(productId, quantity);
+            System.out.println("U heeft " + quantity + " uit voorraad verwijderd van " + deletedProduct.getName());
+            System.out.println("De huidige voorraad is: " + deletedProduct.getStockQuantity());
         } catch (NoResultException e) {
-            System.out.println("This item does not exist in your order list");
+            System.out.println("Item met id: " + productId + " komt niet voor");
             JPAConfiguration.getEntityManager().getTransaction().rollback();
         } catch (NullPointerException e) {
-            System.out.println("Stock quantity can't be lower than 0");
+            System.out.println("Voorraad kan niet lager zijn dan 0");
         }
     }
 
