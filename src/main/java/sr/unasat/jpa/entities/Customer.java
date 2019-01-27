@@ -43,7 +43,7 @@ public class Customer {
         return customerNumber;
     }
 
-    public void setCustomerNumber() {
+    private void setCustomerNumber() {
         int customerNumber = new Random().nextInt(1000);
         if (!availableCustomerNumbers.contains(customerNumber)) {
             availableCustomerNumbers.add(customerNumber);
@@ -77,6 +77,7 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
+                "id=" + id +
                 "customerNumber=" + customerNumber +
                 ", person= " + getPerson().getFullName() +
                 '}';

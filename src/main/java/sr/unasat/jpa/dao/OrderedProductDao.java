@@ -4,6 +4,7 @@ import sr.unasat.jpa.config.JPAConfiguration;
 import sr.unasat.jpa.entities.OrderedProduct;
 import sr.unasat.jpa.entities.Product;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -39,14 +40,8 @@ public class OrderedProductDao {
     }
 
     public Product addToOrders(int productId, int quantity) {
-        List<Product> products = productDao.selectAllProducts();
         Product selectedProduct = productDao.selectProductById(productId);
-
-        for (Product prod : products) {
-            if (!prod.getName().equals(selectedProduct.getName())) {
-                break;
-            }
-        }
+        checkIfAlreadyInOrders(selectedProduct);
         OrderedProduct orderedProduct = new OrderedProduct(selectedProduct, quantity);
         productDao.removeFromStock(orderedProduct.getProduct().getId(), quantity);
         entityManager.getTransaction().begin();
@@ -73,5 +68,13 @@ public class OrderedProductDao {
             totalPrice += price;
         }
         return totalPrice;
+    }
+
+    private void checkIfAlreadyInOrders(Product product) {
+        for (OrderedProduct orderedProduct : orders) {
+            if (orderedProduct.getProduct().getName().equals(product.getName())) {
+                throw new EntityExistsException();
+            }
+        }
     }
 }

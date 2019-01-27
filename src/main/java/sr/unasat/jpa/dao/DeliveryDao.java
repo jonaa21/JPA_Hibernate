@@ -22,4 +22,14 @@ public class DeliveryDao {
         entityManager.getTransaction().commit();
         return deliveryList;
     }
+
+    public Delivery selectDeliveryMethod(int deliveryMethodId) {
+        entityManager.getTransaction().begin();
+        String jpql = "select d from Delivery d where d.id = :deliveryMethodId";
+        TypedQuery<Delivery> query = entityManager.createQuery(jpql, Delivery.class);
+        query.setParameter("deliveryMethodId", deliveryMethodId);
+        Delivery selectedDelivery = query.getSingleResult();
+        entityManager.getTransaction().commit();
+        return selectedDelivery;
+    }
 }
