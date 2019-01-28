@@ -18,9 +18,7 @@ public class OrderedProduct {
     @Column
     private int quantity;
 
-    @ManyToMany
-    @JoinTable(name = "order_detail", joinColumns = @JoinColumn(name = "ordered_prod_fk"),
-            inverseJoinColumns = @JoinColumn(name = "receipt_fk"))
+    @ManyToMany(mappedBy = "orderedProducts")
     private Set<Receipt> receipt;
 
     public OrderedProduct(Product product, int quantity) {
@@ -53,6 +51,14 @@ public class OrderedProduct {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Set<Receipt> getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(Set<Receipt> receipt) {
+        this.receipt = receipt;
     }
 
     @Override

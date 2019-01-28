@@ -21,7 +21,7 @@ public class OrderedProductsService {
     }
 
     public void selectAllOrderedProducts() {
-        orderedProductDao.selectAllOrderedProducts().forEach(orderedProduct -> System.out.println(orderedProduct));
+        orderedProductDao.viewAllOrderedProducts().forEach(orderedProduct -> System.out.println(orderedProduct));
     }
 
     public void addToOrders(int productId, int quantity) {

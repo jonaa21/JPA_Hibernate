@@ -31,10 +31,10 @@ public class Receipt {
     inverseJoinColumns = @JoinColumn(name = "ordered_prod_fk"))
     private Set<OrderedProduct> orderedProducts;
 
-    public Receipt(Customer customer, double totalPrice, Date purchaseDate, Delivery deliveryMethod) {
+    public Receipt(Customer customer, double totalPrice, Delivery deliveryMethod) {
         this.customer = customer;
         this.totalPrice = totalPrice;
-        this.purchaseDate = purchaseDate;
+        this.purchaseDate = new Date();
         this.deliveryMethod = deliveryMethod;
     }
 
@@ -81,13 +81,59 @@ public class Receipt {
         this.deliveryMethod = deliveryMethod;
     }
 
+    public Set<OrderedProduct> getOrderedProducts() {
+        return orderedProducts;
+    }
+
+    public void setOrderedProducts(Set<OrderedProduct> orderedProducts) {
+        this.orderedProducts = orderedProducts;
+    }
+
+    public void addCustomer(Customer customer) {
+        if (!customer.getReceipt().contains(this)) {
+            customer.getReceipt().add(this);
+        }
+    }
+
+    public void removeCustomer(Customer customer) {
+        if (customer.getReceipt().contains(this)) {
+            customer.getReceipt().remove(this);
+        }
+    }
+
+    public void addOrder(OrderedProduct orderedProduct) {
+        if (!orderedProduct.getReceipt().contains(this)) {
+            orderedProduct.getReceipt().add(this);
+        }
+    }
+
+    public void removeOrders(OrderedProduct orderedProduct) {
+        if (orderedProduct.getReceipt().contains(this)) {
+            orderedProduct.getReceipt().remove(this);
+        }
+    }
+
+    public void addDeliveryMethod(Delivery delivery) {
+        if (!delivery.getReceipt().contains(this)) {
+            delivery.getReceipt().add(this);
+        }
+    }
+
+    public void removeDelivery(Delivery delivery) {
+        if (delivery.getReceipt().contains(this)) {
+            delivery.getReceipt().remove(this);
+        }
+    }
+
     @Override
     public String toString() {
         return "Receipt{" +
-                "customer=" + customer +
-                ", totalPrice=" + totalPrice +
+                "id=" + id +
+                ", customer=" + customer +
                 ", purchaseDate=" + purchaseDate +
                 ", deliveryMethod=" + deliveryMethod +
+                ", orderedProducts=" + orderedProducts +
+                ", totalPrice=" + totalPrice +
                 '}';
     }
 }

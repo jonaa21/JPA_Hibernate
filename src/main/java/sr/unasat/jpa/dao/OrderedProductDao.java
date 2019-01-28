@@ -20,7 +20,7 @@ public class OrderedProductDao {
         this.entityManager = entityManager;
     }
 
-    public List<OrderedProduct> selectAllOrderedProducts() {
+    public List<OrderedProduct> viewAllOrderedProducts() {
         entityManager.getTransaction().begin();
         String jpql = "select o from OrderedProduct o";
         TypedQuery<OrderedProduct> query = entityManager.createQuery(jpql, OrderedProduct.class);
@@ -61,20 +61,15 @@ public class OrderedProductDao {
         return orderedProduct;
     }
 
-    public double calculatePriceFromOrder(int OrderedProductId) {//TODO: calculate in receipt
-        double totalPrice = 0.0;
-        for (OrderedProduct order : orders) {
-            double price = order.getProduct().getPrice() * order.getQuantity();
-            totalPrice += price;
-        }
-        return totalPrice;
-    }
-
     private void checkIfAlreadyInOrders(Product product) {
         for (OrderedProduct orderedProduct : orders) {
             if (orderedProduct.getProduct().getName().equals(product.getName())) {
                 throw new EntityExistsException();
             }
         }
+    }
+
+    public List<OrderedProduct> getOrderList() {
+        return this.orders;
     }
 }

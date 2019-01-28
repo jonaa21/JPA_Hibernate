@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Entity
 @Table
@@ -22,7 +23,7 @@ public class Customer {
     private Person person;
 
     @OneToMany(mappedBy = "customer")
-    private List<Receipt> receipt;
+    private Set<Receipt> receipt;
 
     public Customer(Person person) {
         this.customerNumber = getCustomerNumber();
@@ -72,6 +73,14 @@ public class Customer {
         if(person.getCustomer() == this){
             person.setCustomer(null);
         }
+    }
+
+    public Set<Receipt> getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(Set<Receipt> receipt) {
+        this.receipt = receipt;
     }
 
     @Override
