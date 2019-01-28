@@ -2,8 +2,8 @@ package sr.unasat.jpa.services;
 
 import sr.unasat.jpa.config.JPAConfiguration;
 import sr.unasat.jpa.dao.OrderedProductDao;
+import sr.unasat.jpa.entities.AvailableProduct;
 import sr.unasat.jpa.entities.OrderedProduct;
-import sr.unasat.jpa.entities.Product;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -26,9 +26,9 @@ public class OrderedProductsService {
 
     public void addToOrders(int productId, int quantity) {
         try {
-            Product orderedProduct = orderedProductDao.addToOrders(productId, quantity);
-            orders.add(new OrderedProduct(orderedProduct, quantity));
-            System.out.println("U heeft " + orderedProduct.getName() + " toegevoegd");
+            AvailableProduct orderedAvailableProduct = orderedProductDao.addToOrders(productId, quantity);
+            orders.add(new OrderedProduct(orderedAvailableProduct, quantity));
+            System.out.println("U heeft " + orderedAvailableProduct.getName() + " toegevoegd");
         } catch (EntityExistsException e) {
             System.out.println("U heeft dit product al toegevoegd");
             viewAllOrders();
@@ -43,7 +43,7 @@ public class OrderedProductsService {
     public void viewAllOrders() {
         if (!orders.isEmpty()) {
             orders.forEach(order -> System.out.println("Dit zijn uw bestellingen: \n" +
-                    "Item: " + order.getProduct().getName() + "\n" +
+                    "Item: " + order.getAvailableProduct().getName() + "\n" +
                     "Aantal: " + order.getQuantity()));
         } else {
             System.out.println("U heeft geen bestellingen");

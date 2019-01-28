@@ -30,6 +30,5 @@ public class Application {
         System.out.println("------------------");
         orderedProductsService.removeFromOrders(2);
         productService.viewAllProducts();
-
     }
 }

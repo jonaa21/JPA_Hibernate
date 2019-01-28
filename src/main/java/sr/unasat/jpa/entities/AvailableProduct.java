@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table
-public class Product {
+@Table(name = "product")
+public class AvailableProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +26,14 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderedProduct> orderedProducts;
 
-    public Product(String name, double price, int stockQuantity, int rating) {
+    public AvailableProduct(String name, double price, int stockQuantity, int rating) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.rating = rating;
     }
 
-    public Product() {
+    public AvailableProduct() {
     }
 
     public int getId() {
@@ -86,7 +86,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "AvailableProduct{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +

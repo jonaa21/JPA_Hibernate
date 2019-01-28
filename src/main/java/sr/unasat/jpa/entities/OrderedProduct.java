@@ -13,7 +13,7 @@ public class OrderedProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_fk")
-    private Product product;
+    private AvailableProduct availableProduct;
 
     @Column
     private int quantity;
@@ -21,8 +21,8 @@ public class OrderedProduct {
     @ManyToMany(mappedBy = "orderedProducts")
     private Set<Receipt> receipt;
 
-    public OrderedProduct(Product product, int quantity) {
-        this.product = product;
+    public OrderedProduct(AvailableProduct availableProduct, int quantity) {
+        this.availableProduct = availableProduct;
         this.quantity = quantity;
     }
 
@@ -37,12 +37,12 @@ public class OrderedProduct {
         this.id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public AvailableProduct getAvailableProduct() {
+        return availableProduct;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setAvailableProduct(AvailableProduct availableProduct) {
+        this.availableProduct = availableProduct;
     }
 
     public int getQuantity() {
@@ -65,7 +65,7 @@ public class OrderedProduct {
     public String toString() {
         return "OrderedProduct{" +
                 "id=" + id +
-                ", product=" + product.getName() +
+                ", availableProduct=" + availableProduct.getName() +
                 ", quantity=" + quantity +
                 '}';
     }

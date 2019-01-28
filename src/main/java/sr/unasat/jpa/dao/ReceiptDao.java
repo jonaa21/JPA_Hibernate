@@ -38,7 +38,7 @@ public class ReceiptDao {
         orderedProducts = orderList.getOrderList();
         double totalPrice = 0.0;
         for (OrderedProduct order : orderedProducts) {
-            double price = order.getProduct().getPrice() * order.getQuantity();
+            double price = order.getAvailableProduct().getPrice() * order.getQuantity();
             totalPrice += price;
         }
         return totalPrice;

@@ -1,8 +1,8 @@
 package sr.unasat.jpa.dao;
 
 import sr.unasat.jpa.config.JPAConfiguration;
+import sr.unasat.jpa.entities.AvailableProduct;
 import sr.unasat.jpa.entities.OrderedProduct;
-import sr.unasat.jpa.entities.Product;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -39,21 +39,21 @@ public class OrderedProductDao {
         return selectedOrderedProduct;
     }
 
-    public Product addToOrders(int productId, int quantity) {
-        Product selectedProduct = productDao.selectProductById(productId);
-        checkIfAlreadyInOrders(selectedProduct);
-        OrderedProduct orderedProduct = new OrderedProduct(selectedProduct, quantity);
-        productDao.removeFromStock(orderedProduct.getProduct().getId(), quantity);
+    public AvailableProduct addToOrders(int productId, int quantity) {
+        AvailableProduct selectedAvailableProduct = productDao.selectProductById(productId);
+        checkIfAlreadyInOrders(selectedAvailableProduct);
+        OrderedProduct orderedProduct = new OrderedProduct(selectedAvailableProduct, quantity);
+        productDao.removeFromStock(orderedProduct.getAvailableProduct().getId(), quantity);
         entityManager.getTransaction().begin();
         entityManager.persist(orderedProduct);
         entityManager.getTransaction().commit();
         orders.add(orderedProduct);
-        return selectedProduct;
+        return selectedAvailableProduct;
     }
 
     public OrderedProduct removeFromOrders(int orderedProductId) {
         OrderedProduct orderedProduct = selectOrderedProduct(orderedProductId);
-        productDao.addToStock(orderedProduct.getProduct().getId(), orderedProduct.getQuantity());
+        productDao.addToStock(orderedProduct.getAvailableProduct().getId(), orderedProduct.getQuantity());
         orders.remove(orderedProduct);
         entityManager.getTransaction().begin();
         entityManager.remove(orderedProduct);
@@ -61,9 +61,9 @@ public class OrderedProductDao {
         return orderedProduct;
     }
 
-    private void checkIfAlreadyInOrders(Product product) {
+    private void checkIfAlreadyInOrders(AvailableProduct availableProduct) {
         for (OrderedProduct orderedProduct : orders) {
-            if (orderedProduct.getProduct().getName().equals(product.getName())) {
+            if (orderedProduct.getAvailableProduct().getName().equals(availableProduct.getName())) {
                 throw new EntityExistsException();
             }
         }

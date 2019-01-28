@@ -54,11 +54,11 @@ CREATE TABLE IF NOT EXISTS jpa.customer
 ;
 
 -- -----------------------------------------------------
--- Table jpa.customer.orderedProduct
+-- Table jpa.customer.orderedAvailableProduct
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS jpa.orderedProduct;
+DROP TABLE IF EXISTS jpa.orderedAvailableProduct;
 
-CREATE TABLE IF NOT EXISTS jpa.orderedProduct
+CREATE TABLE IF NOT EXISTS jpa.orderedAvailableProduct
 (
   id             INT         NOT NULL AUTO_INCREMENT,
   name           VARCHAR(45) NOT NULL,
@@ -142,7 +142,7 @@ ALTER TABLE jpa.customer
 ALTER TABLE jpa.ordered_product
   ADD CONSTRAINT prod_fk
     FOREIGN KEY (product_fk)
-      REFERENCES jpa.orderedProduct (id)
+      REFERENCES jpa.orderedAvailableProduct (id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION;
 
@@ -211,19 +211,19 @@ VALUES (DEFAULT, 'Jane', 'Woo', 5);
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table jpa.orderedProduct
+-- Data for table jpa.orderedAvailableProduct
 -- -----------------------------------------------------
 START TRANSACTION;
 USE jpa;
-INSERT INTO `jpa`.`orderedProduct` (`name`, `price`, `stock_quantity`, `rating`)
+INSERT INTO `jpa`.`orderedAvailableProduct` (`name`, `price`, `stock_quantity`, `rating`)
 VALUES ('Apple iPhone X', '1100', '8', '5');
-INSERT INTO `jpa`.`orderedProduct` (`name`, `price`, `stock_quantity`, `rating`)
+INSERT INTO `jpa`.`orderedAvailableProduct` (`name`, `price`, `stock_quantity`, `rating`)
 VALUES ('Samsung Galaxy S9', '800', '10', '4');
-INSERT INTO `jpa`.`orderedProduct` (`name`, `price`, `stock_quantity`, `rating`)
+INSERT INTO `jpa`.`orderedAvailableProduct` (`name`, `price`, `stock_quantity`, `rating`)
 VALUES ('Lenovo ThinkPad T550', '1150', '9', '4');
-INSERT INTO `jpa`.`orderedProduct` (`name`, `price`, `stock_quantity`, `rating`)
+INSERT INTO `jpa`.`orderedAvailableProduct` (`name`, `price`, `stock_quantity`, `rating`)
 VALUES ('LG 49\" LED TV', '600', '15', '3');
-INSERT INTO `jpa`.`orderedProduct` (`name`, `price`, `stock_quantity`, `rating`)
+INSERT INTO `jpa`.`orderedAvailableProduct` (`name`, `price`, `stock_quantity`, `rating`)
 VALUES ('Sharp 27\" Monitor', '250', '5', '2');
 
 COMMIT;
